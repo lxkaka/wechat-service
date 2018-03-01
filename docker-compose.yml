@@ -1,0 +1,19 @@
+mongo:
+  restart: always
+  image: mongo:3.4.9
+  volumes:
+    - ./data/db:/data/db
+redis:
+  restart: always
+  image: redis:4.0.2
+lxkaka:
+  restart: always
+  build: .
+  links:
+    - mongo
+    - redis
+  environment:
+    - PIP_INDEX_URL=http://mirrors.aliyun.com/pypi/simple
+    - PIP_TRUSTED_HOST=mirrors.aliyun.com
+  ports:
+    - "8888:8888"

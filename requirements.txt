@@ -1,0 +1,9 @@
+tornado==4.5.2
+pytz==2017.3
+cryptography==2.1.1
+wechatpy==1.5.5
+PyMongo==3.5.1
+motor==1.1
+xmltodict==0.11.0
+redis==2.10.5
+APScheduler==3.4.0
