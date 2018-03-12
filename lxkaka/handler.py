@@ -48,6 +48,7 @@ class DebugHandler(tornado.web.RequestHandler):
     async def get(self, *args, **kwargs):
         data = {
             'APPID': options.APPID,
-            'TOKEN': options.TOKEN
+            'TOKEN': options.TOKEN,
+            'author': 'lxkaka',
         }
         self.finish(json.dumps(data, ensure_ascii=False))
