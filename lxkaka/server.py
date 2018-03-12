@@ -23,9 +23,9 @@ class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r'/counter/', KakaCounter),
-            (r'/api/wechat_counter/', CounterReplyHandler),
+            (r'/wechat_counter/', CounterReplyHandler),
             # 下面这个测试用的
-            (r'/api/debug/', DebugHandler),
+            (r'/debug/', DebugHandler),
         ]
         settings = dict(
             blog_title='lxkaka',
