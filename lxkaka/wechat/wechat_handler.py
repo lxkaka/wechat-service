@@ -13,6 +13,21 @@ from wechatpy.utils import check_signature
 from libs.commands import get_mongodb_db
 
 
+def get_life_style(data):
+    """生活指数"""
+    url = 'https://free-api.heweather.com/s6/weather/lifestyle'
+    response = requests.get(url, data)
+    if response.status_code != 200:
+        return None
+    else:
+        res = json.loads(response.content)
+        life_style = res.get('HeWeather6')[0].get('lifestyle')
+        for style in life_style:
+            if style['type'] == 'comf':
+                return style['txt']
+    return None
+
+
 def get_weather_report(location=None):
     location = location if location else '徐汇,上海'
     data = {
@@ -27,12 +42,13 @@ def get_weather_report(location=None):
         res = json.loads(response.content)
         location_info = res.get('HeWeather6')[0].get('basic')
         weather_info = res.get('HeWeather6')[0].get('daily_forecast')
-        content = '{}{}天气:\n今天白天{}，晚上{}\n气温{}-{}摄氏度\n明天白天{}，晚上{}\n气温{}-{}摄氏度\n'.format(
+        life_style = get_life_style(data)
+        content = '{}{}天气:\n 今天白天{}，晚上{}\n 气温{}-{}摄氏度\n 明天白天{}，晚上{}\n 气温{}-{}摄氏度\nlife style:\n {}'.format(
             location_info.get('parent_city'), location_info.get('location'),
             weather_info[0].get('cond_txt_d'), weather_info[0].get('cond_txt_n'), weather_info[0].get('tmp_min'),
             weather_info[0].get('tmp_max'),
             weather_info[1].get('cond_txt_d'), weather_info[1].get('cond_txt_n'), weather_info[1].get('tmp_min'),
-            weather_info[1].get('tmp_max')
+            weather_info[1].get('tmp_max'), life_style
         )
     return content
 
