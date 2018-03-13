@@ -43,7 +43,7 @@ def get_weather_report(location=None):
         location_info = res.get('HeWeather6')[0].get('basic')
         weather_info = res.get('HeWeather6')[0].get('daily_forecast')
         life_style = get_life_style(data)
-        content = '{}{}天气:\n 今天白天{}，晚上{}\n 气温{}-{}摄氏度\n 明天白天{}，晚上{}\n 气温{}-{}摄氏度\nlife style:\n {}'.format(
+        content = '{}{}天气:\n 今天白天{}，晚上{}\n 气温{}-{}摄氏度\n 明天白天{}，晚上{}\n 气温{}-{}摄氏度\n舒适指数:\n {}'.format(
             location_info.get('parent_city'), location_info.get('location'),
             weather_info[0].get('cond_txt_d'), weather_info[0].get('cond_txt_n'), weather_info[0].get('tmp_min'),
             weather_info[0].get('tmp_max'),
