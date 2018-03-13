@@ -1,13 +1,40 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import json
+
+import requests
 import tornado.web
 from tornado.options import options
-from wechatpy import parse_message, create_reply
+from wechatpy import create_reply, parse_message
 from wechatpy.crypto import WeChatCrypto
-from wechatpy.exceptions import InvalidSignatureException, InvalidAppIdException
+from wechatpy.exceptions import InvalidAppIdException, InvalidSignatureException
 from wechatpy.utils import check_signature
 
 from libs.commands import get_mongodb_db
+
+
+def get_weather_report(location=None):
+    location = location if location else '徐汇,上海'
+    data = {
+        'location': location,
+        'key': 'a17b5bfc80d04f38b13f242b43ce8bb0',
+    }
+    url = 'https://free-api.heweather.com/s6/weather/forecast'
+    response = requests.get(url, data)
+    if response.status_code != 200:
+        content = '请求异常'
+    else:
+        res = json.loads(response.content)
+        location_info = res.get('HeWeather6')[0].get('basic')
+        weather_info = res.get('HeWeather6')[0].get('daily_forecast')
+        content = '{}{}天气:\n今天白天{}，晚上{}\n气温{}-{}摄氏度\n明天白天{}，晚上{}\n气温{}-{}摄氏度\n'.format(
+            location_info.get('parent_city'), location_info.get('location'),
+            weather_info[0].get('cond_txt_d'), weather_info[0].get('cond_txt_n'), weather_info[0].get('tmp_min'),
+            weather_info[0].get('tmp_max'),
+            weather_info[1].get('cond_txt_d'), weather_info[1].get('cond_txt_n'), weather_info[1].get('tmp_min'),
+            weather_info[1].get('tmp_max')
+        )
+    return content
 
 
 async def handle_wechat_message(message):
@@ -19,6 +46,12 @@ async def handle_wechat_message(message):
         lx_count = int(message.lstrip('lx').strip()) or 0
     if message.startswith('lq'):
         lq_count = int(message.lstrip('lq').strip()) or 0
+    elif message.startswith('weather'):
+        location = message.lstrip('weather').strip()
+        return get_weather_report(location)
+    elif message.startswith('天气'):
+        location = message.lstrip('天气').strip()
+        return get_weather_report(location)
     record = await collection.find_one({'_id': record_id})
     if record:
         lx_count += record.get('lx_count')
