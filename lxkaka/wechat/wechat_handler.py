@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import json
+import re
 
 import requests
 import tornado.web
@@ -11,6 +12,23 @@ from wechatpy.exceptions import InvalidAppIdException, InvalidSignatureException
 from wechatpy.utils import check_signature
 
 from libs.commands import get_mongodb_db
+from wechat.commands import record_info, get_record
+
+
+def get_history_weather(location, date):
+    """历史天气"""
+    url = 'https://free-api.heweather.com/s6/weather/historical'
+    data = {
+        'location': location,
+        'date': date,
+        'key': 'a17b5bfc80d04f38b13f242b43ce8bb0',
+    }
+    response = requests.get(url ,data)
+    if response.status_code != 200:
+        return None
+    else:
+        res = json.loads(response.content)
+    return res
 
 
 def get_life_style(data):
@@ -68,6 +86,8 @@ async def handle_wechat_message(message):
     elif message.startswith('天气'):
         location = message.lstrip('天气').strip()
         return get_weather_report(location)
+    elif re.match(r'^\d{8}$', message):
+        return await get_record(message)
     record = await collection.find_one({'_id': record_id})
     if record:
         lx_count += record.get('lx_count')
@@ -117,6 +137,7 @@ class CounterReplyHandler(tornado.web.RequestHandler):
         if encrypt_type == 'raw':
             msg = parse_message(self.request.body)
             if msg.type == 'text':
+                await record_info(msg)
                 reply_content = await handle_wechat_message(msg.content)
                 reply = create_reply(reply_content, msg, render=True)
             else:
