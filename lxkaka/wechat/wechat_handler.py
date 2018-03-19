@@ -72,21 +72,22 @@ def get_weather_report(location=None):
 
 
 async def handle_wechat_message(message):
+    content = message.content
     record_id = 'lxlikelq'
     collection = get_mongodb_db()['counter']
     lx_count = 0
     lq_count = 0
-    if message.startswith('lx'):
-        lx_count = int(message.lstrip('lx').strip()) or 0
-    if message.startswith('lq'):
-        lq_count = int(message.lstrip('lq').strip()) or 0
-    elif message.startswith('weather'):
-        location = message.lstrip('weather').strip()
+    if content.startswith('lx'):
+        lx_count = int(content.lstrip('lx').strip()) or 0
+    if content.startswith('lq'):
+        lq_count = int(content.lstrip('lq').strip()) or 0
+    elif content.startswith('weather'):
+        location = content.lstrip('weather').strip()
         return get_weather_report(location)
-    elif message.startswith('天气'):
-        location = message.lstrip('天气').strip()
+    elif content.startswith('天气'):
+        location = content.lstrip('天气').strip()
         return get_weather_report(location)
-    elif re.match(r'^\d{8}$', message):
+    elif re.match(r'^\d{8}$', content):
         return await get_record(message)
     record = await collection.find_one({'_id': record_id})
     if record:
@@ -138,7 +139,7 @@ class CounterReplyHandler(tornado.web.RequestHandler):
             msg = parse_message(self.request.body)
             if msg.type == 'text':
                 await record_info(msg)
-                reply_content = await handle_wechat_message(msg.content)
+                reply_content = await handle_wechat_message(msg)
                 reply = create_reply(reply_content, msg, render=True)
             else:
                 reply = create_reply('暂时不支持该消息类型', msg, render=True)
@@ -153,7 +154,7 @@ class CounterReplyHandler(tornado.web.RequestHandler):
                     nonce
                 )
                 if msg.type == 'text':
-                    reply_content = await handle_wechat_message(msg.content)
+                    reply_content = await handle_wechat_message(msg)
                     reply = create_reply(reply_content, msg, render=True)
                 else:
                     reply = create_reply('暂时不支持该消息类型', msg, render=True)
