@@ -34,5 +34,8 @@ async def record_info(msg):
 async def get_record(msg):
     """根据日期查询日记"""
     collection = get_mongodb_db()['record']
+    print(msg.content, msg.source)
     record = await collection.find_one({'_id': msg.content})
-    return record.get(msg.source)
+    print(record.get(msg.source))
+    return record.get(msg.source) if record else None
+
