@@ -14,9 +14,10 @@ async def record_info(msg):
 
     collection = get_mongodb_db()['record']
     record_id = datetime.datetime.now().strftime('%Y%m%d')
+    await collection.delete_one({'_id': record_id})
     record = await collection.find_one({'_id': record_id})
     if record:
-        content = '{}\n{}'.format(record, msg.content)
+        content = '{}\n{}'.format(record.get(msg.source), msg.content)
     else:
         content = msg.content
     await collection.update_one(
