@@ -80,9 +80,9 @@ async def handle_wechat_message(message):
     lx_count = 0
     lq_count = 0
     if content.startswith('lx'):
-        lx_count = int(content.lstrip('lx').strip()) or 0
+        lx_count = int(content.lstrip('lx').strip() or 0)
     if content.startswith('lq'):
-        lq_count = int(content.lstrip('lq').strip()) or 0
+        lq_count = int(content.lstrip('lq').strip() or 0)
     elif content.startswith('weather'):
         location = content.lstrip('weather').strip()
         return get_weather_report(location)
