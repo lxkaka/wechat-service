@@ -72,7 +72,8 @@ def get_weather_report(location=None):
 
 
 async def handle_wechat_message(message):
-    await record_info(message) if re.match(r'^\d{8}$', message.content) is None else None
+    if re.match(r'^\d{8}$', message.content) is None:
+        await record_info(message)
     content = message.content
     record_id = 'lxlikelq'
     collection = get_mongodb_db()['counter']
