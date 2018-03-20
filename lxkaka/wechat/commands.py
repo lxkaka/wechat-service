@@ -11,7 +11,6 @@ async def record_info(msg):
     msg.source: openid
     msg.content: 消息体
     """
-
     collection = get_mongodb_db()['record']
     record_id = datetime.datetime.now().strftime('%Y%m%d')
     # await collection.delete_one({'_id': record_id})

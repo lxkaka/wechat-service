@@ -12,7 +12,7 @@ from wechatpy.exceptions import InvalidAppIdException, InvalidSignatureException
 from wechatpy.utils import check_signature
 
 from libs.commands import get_mongodb_db
-from wechat.commands import record_info, get_record
+from wechat.commands import get_record, record_info
 
 
 def get_history_weather(location, date):
@@ -23,7 +23,7 @@ def get_history_weather(location, date):
         'date': date,
         'key': 'a17b5bfc80d04f38b13f242b43ce8bb0',
     }
-    response = requests.get(url ,data)
+    response = requests.get(url, data)
     if response.status_code != 200:
         return None
     else:
@@ -72,6 +72,7 @@ def get_weather_report(location=None):
 
 
 async def handle_wechat_message(message):
+    await record_info(message) if re.match(r'^\d{8}$', message.content) is None else None
     content = message.content
     record_id = 'lxlikelq'
     collection = get_mongodb_db()['counter']
@@ -138,7 +139,6 @@ class CounterReplyHandler(tornado.web.RequestHandler):
         if encrypt_type == 'raw':
             msg = parse_message(self.request.body)
             if msg.type == 'text':
-                await record_info(msg)
                 reply_content = await handle_wechat_message(msg)
                 reply = create_reply(reply_content, msg, render=True)
             else:
