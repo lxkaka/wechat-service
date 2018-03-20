@@ -90,6 +90,8 @@ async def handle_wechat_message(message):
         return get_weather_report(location)
     elif re.match(r'^\d{8}$', content):
         return await get_record(message)
+    else:
+        return 'lx❤️lq'
     record = await collection.find_one({'_id': record_id})
     if record:
         lx_count += record.get('lx_count')
