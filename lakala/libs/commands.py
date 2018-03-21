@@ -22,7 +22,7 @@ def get_redis_client():
 
 def get_mongodb_db():
     global _mongodb_db
-    _mongodb_db = _mongodb_db or motor.motor_tornado.MotorClient(host='mongo')['lxkaka']
+    _mongodb_db = _mongodb_db or motor.motor_tornado.MotorClient(host='mongo')['lakala']
     return _mongodb_db
 
 

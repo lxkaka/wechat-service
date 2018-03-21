@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# lxkaka's Server
+# lakala's Server
 
 import tornado.httpserver
 import tornado.ioloop
@@ -28,7 +28,7 @@ class Application(tornado.web.Application):
             (r'/debug/', DebugHandler),
         ]
         settings = dict(
-            blog_title='lxkaka',
+            blog_title='lakala',
             xsrf_cookies=False,
             cookie_secret='',
             login_url='/auth/login',
