@@ -14,10 +14,10 @@ RUN echo $TZ > /etc/timezone && \
 # ENV PIP_INDEX_URL http://mirrors.aliyun.com/pypi/simple
 # ENV PIP_TRUSTED_HOST mirrors.aliyun.com
 
-RUN mkdir -p /var/www/lxkaka
-WORKDIR /var/www/lxkaka
-COPY requirements.txt /var/www/lxkaka
+RUN mkdir -p /var/www/lakala
+WORKDIR /var/www/lakala
+COPY requirements.txt /var/www/lakala
 RUN pip install -r requirements.txt
 
-COPY ./lxkaka/ /var/www/lxkaka/
+COPY ./lakala/ /var/www/lakala/
 CMD python server.py

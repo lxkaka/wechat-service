@@ -49,6 +49,6 @@ class DebugHandler(tornado.web.RequestHandler):
         data = {
             'APPID': options.APPID,
             'TOKEN': options.TOKEN,
-            'author': 'lxkaka',
+            'author': 'lakala',
         }
         self.finish(json.dumps(data, ensure_ascii=False))
